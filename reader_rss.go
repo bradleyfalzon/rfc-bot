@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -11,6 +10,10 @@ import (
 type rssFeed struct {
 	feed  *rss.Feed
 	rchan chan string
+}
+
+type rssFilter interface {
+	Filter(*rss.Item) string
 }
 
 func NewRSS(url string) (*rssFeed, error) {
@@ -34,8 +37,7 @@ func (r *rssFeed) MarkAllRead() {
 }
 
 // Read periodically refreshes rss feed looking for new items
-//func (r *rssFeed) Read(wchan chan<- string) {
-func (r *rssFeed) Read() {
+func (r *rssFeed) Read(filter rssFilter) {
 	for {
 		// Sleep until the next refresh period
 		sleep := r.feed.Refresh.Sub(time.Now())
@@ -47,7 +49,7 @@ func (r *rssFeed) Read() {
 			if !item.Read {
 				item.Read = true
 				r.feed.Unread--
-				r.rchan <- fmt.Sprintf("%s %s", item.Title, item.Link)
+				r.rchan <- filter.Filter(item)
 			}
 		}
 	}

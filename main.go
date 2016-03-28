@@ -26,6 +26,8 @@ func main() {
 		select {
 		case str := <-ietfRFC():
 			writer.Wchan <- str
+		case str := <-ietfDraftRFC():
+			writer.Wchan <- str
 		}
 	}
 }
