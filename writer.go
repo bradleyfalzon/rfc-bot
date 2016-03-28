@@ -15,9 +15,11 @@ func NewWriter() *writer {
 	writer.Wchan = make(chan string)
 
 	go func() {
-		select {
-		case str := <-writer.Wchan:
-			writer.write(str)
+		for {
+			select {
+			case str := <-writer.Wchan:
+				writer.write(str)
+			}
 		}
 	}()
 	return writer
