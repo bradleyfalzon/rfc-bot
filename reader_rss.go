@@ -8,12 +8,11 @@ import (
 )
 
 type rssFeed struct {
-	feed  *rss.Feed
-	rchan chan string
+	feed *rss.Feed
 }
 
 type rssFilter interface {
-	Filter(*rss.Item) string
+	Filter(*rss.Item)
 }
 
 func NewRSS(url string) (*rssFeed, error) {
@@ -23,7 +22,6 @@ func NewRSS(url string) (*rssFeed, error) {
 	if err != nil {
 		return nil, err
 	}
-	rssFeed.rchan = make(chan string)
 	rssFeed.MarkAllRead()
 	return rssFeed, nil
 }
@@ -49,7 +47,7 @@ func (r *rssFeed) Read(filter rssFilter) {
 			if !item.Read {
 				item.Read = true
 				r.feed.Unread--
-				r.rchan <- filter.Filter(item)
+				filter.Filter(item)
 			}
 		}
 	}
