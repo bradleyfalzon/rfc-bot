@@ -1,0 +1,18 @@
+[Unit]
+Description=Docker Container running RFC-Bot
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+
+# Dash will ensure systemd doesn't fail if command fails
+ExecStartPre=-/usr/bin/docker stop rfc-bot
+ExecStartPre=-/usr/bin/docker rm rfc-bot
+
+ExecStart=/usr/bin/docker run --rm --name=rfc-bot rfc-bot
+
+ExecStop=/usr/bin/docker stop rfc-bot
+
+[Install]
+WantedBy=multi-user.target
