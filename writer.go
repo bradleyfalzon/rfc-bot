@@ -24,6 +24,9 @@ func NewWriter() *writer {
 }
 
 func (w *writer) write(str string) {
+	if str == "" {
+		return
+	}
 	log.Println("Writing msg:", str)
 	for _, writer := range w.writers {
 		if _, err := writer.Write([]byte(str)); err != nil {
