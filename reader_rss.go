@@ -37,6 +37,9 @@ func (r *rssFeed) MarkAllRead() {
 // Read periodically refreshes rss feed looking for new items
 func (r *rssFeed) Read(filter rssFilter) {
 	for {
+		// Overwrite the refresh interval to a max value
+		r.OverwriteRefresh()
+
 		// Sleep until the next refresh period
 		sleep := r.feed.Refresh.Sub(time.Now())
 		log.Printf("%s next update at: %s (%s)", r.feed.Title, r.feed.Refresh, sleep)
@@ -50,5 +53,13 @@ func (r *rssFeed) Read(filter rssFilter) {
 				filter.Filter(item)
 			}
 		}
+	}
+}
+
+// OverwriteRefresh reduces the refresh interval for feeds
+func (r *rssFeed) OverwriteRefresh() {
+	maxRefresh := time.Now().Add(3 * time.Hour)
+	if r.feed.Refresh.After(maxRefresh) {
+		r.feed.Refresh = maxRefresh
 	}
 }
