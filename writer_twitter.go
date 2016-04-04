@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/url"
+	"regexp"
 
 	"github.com/ChimeraCoder/anaconda"
 )
@@ -20,6 +22,17 @@ func NewTwitter(consumerKey, consumerSecret, accessToken, accessTokenSecret stri
 }
 
 func (t Twitter) Write(str []byte) (int, error) {
-	t.api.PostTweet(string(str), url.Values{})
+	log.Printf("Before hashing: %q", string(str))
+	tweet := prependHashes(string(str))
+	log.Printf("Tweeting: %q", tweet)
+
+	t.api.PostTweet(tweet, url.Values{})
 	return len(str), nil
+}
+
+// Begins with uppercase letter, then many upper-lower-numeric-slash
+var acronym = regexp.MustCompile(`\b([A-Z][a-zA-Z0-9/]*[A-Z0-9]+)`)
+
+func prependHashes(str string) string {
+	return acronym.ReplaceAllString(str, "#$1")
 }
