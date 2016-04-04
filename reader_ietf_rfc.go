@@ -12,7 +12,7 @@ type IETFNewFilter struct {
 }
 
 func (f *IETFNewFilter) Filter(item *rss.Item) {
-	f.wchan <- fmt.Sprintf("RFC: %s %s", item.Title, item.Link)
+	f.wchan <- fmt.Sprintf("New RFC: %s %s", item.Title, item.Link)
 }
 
 func ietfRFC(wchan chan string) {

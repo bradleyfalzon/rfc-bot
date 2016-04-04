@@ -21,7 +21,7 @@ type DraftRFCFilter struct {
 func (f *DraftRFCFilter) Filter(item *rss.Item) {
 	if firstRev.MatchString(item.Content) {
 		title := extractTitle.FindString(item.Title)
-		f.wchan <- fmt.Sprintf("%s %s", title, item.Link)
+		f.wchan <- fmt.Sprintf("New Draft: %s %s", title, item.Link)
 	}
 }
 
