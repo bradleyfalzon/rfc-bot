@@ -20,8 +20,11 @@ type DraftRFCFilter struct {
 // excluding author's names.
 func (f *DraftRFCFilter) Filter(item *rss.Item) {
 	if firstRev.MatchString(item.Content) {
+		log.Println("DraftRFCFilter first rev:", item.Title)
 		title := extractTitle.FindString(item.Title)
 		f.wchan <- fmt.Sprintf("New Draft: %s %s", title, item.Link)
+	} else {
+		log.Println("DraftRFCFilter not first rev:", item.Title)
 	}
 }
 

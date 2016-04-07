@@ -44,15 +44,19 @@ func (r *rssFeed) Read(filter rssFilter) {
 		sleep := r.feed.Refresh.Sub(time.Now())
 		log.Printf("%s next update at: %s (%s)", r.feed.Title, r.feed.Refresh, sleep)
 		time.Sleep(sleep)
+		log.Printf("%s Updating feed: %s", r.feed.Title, r.feed.UpdateURL)
 
 		r.feed.Update()
+		log.Printf("%s updated, %d unread", r.feed.Title, r.feed.Unread)
 		for _, item := range r.feed.Items {
 			if !item.Read {
+				log.Println("Item not read:", item.Title)
 				item.Read = true
 				r.feed.Unread--
 				filter.Filter(item)
 			}
 		}
+		log.Printf("%s finished updating", r.feed.Title)
 	}
 }
 
