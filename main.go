@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
 )
@@ -26,10 +27,11 @@ func main() {
 	writer.AddWriter(twitter)
 
 	log.Println("Initialising Readers")
+	var wg sync.WaitGroup
+	wg.Add(2)
 	go ietfRFC(writer.Wchan)
 	go ietfDraftRFC(writer.Wchan)
 
 	log.Println("Initialised")
-	for {
-	}
+	wg.Wait()
 }
